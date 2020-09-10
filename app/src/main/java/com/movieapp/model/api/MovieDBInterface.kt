@@ -21,6 +21,9 @@ interface MovieDBInterface {
     @GET("movie/top_rated")
     fun getTopRatedMovie(@Query("page") page: Int): Single<MoviesList>
 
+    @GET("movie/now_playing")
+    fun getNowPlayingMovie(@Query("page") page: Int): Single<MoviesList>
+
     @GET("movie/{movie_id}")
     fun getMovieDetails(@Path("movie_id") id : Int) : Single<MovieDetails>
 }

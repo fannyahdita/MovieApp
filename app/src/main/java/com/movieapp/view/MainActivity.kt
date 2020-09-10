@@ -12,21 +12,21 @@ import com.movieapp.R
 import com.movieapp.model.api.MovieDBClient
 import com.movieapp.model.api.MovieDBInterface
 import com.movieapp.model.repository.NetworkState
-import com.movieapp.viewmodel.PopularMoviesPagedListRepository
-import com.movieapp.viewmodel.PopularMovieViewModel
+import com.movieapp.view.adapter.NowPlayingMoviesPagedAdapter
 import com.movieapp.view.adapter.PopularMoviesPagedAdapter
 import com.movieapp.view.adapter.TopRatedMoviesPagedAdapter
-import com.movieapp.viewmodel.TopRatedMovieViewModel
-import com.movieapp.viewmodel.TopRatedMoviesPagedListRepository
+import com.movieapp.viewmodel.*
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var popularMovieViewModel: PopularMovieViewModel
-    private lateinit var topRatedMovieViewModel: TopRatedMovieViewModel
+    private lateinit var popularMoviesViewModel: PopularMoviesViewModel
+    private lateinit var topRatedMoviesViewModel: TopRatedMoviesViewModel
+    private lateinit var nowPlayingMoviesViewModel: NowPlayingMoviesViewModel
 
     lateinit var popularMoviesRepository: PopularMoviesPagedListRepository
     lateinit var topRatedMoviesRepository: TopRatedMoviesPagedListRepository
+    lateinit var nowPlayingMoviesRepository: NowPlayingMoviesPagedListRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,12 +36,15 @@ class MainActivity : AppCompatActivity() {
 
         popularMoviesRepository = PopularMoviesPagedListRepository(apiService)
         topRatedMoviesRepository = TopRatedMoviesPagedListRepository(apiService)
+        nowPlayingMoviesRepository = NowPlayingMoviesPagedListRepository(apiService)
 
-        popularMovieViewModel = getPopularMovieViewModel()
-        topRatedMovieViewModel = getTopRatedMovieViewModel()
+        popularMoviesViewModel = getPopularMovieViewModel()
+        topRatedMoviesViewModel = getTopRatedMovieViewModel()
+        nowPlayingMoviesViewModel = getNowPlayingMovieViewModel()
 
         val popularMovieAdapter = PopularMoviesPagedAdapter(this)
         val topRatedMovieAdapter = TopRatedMoviesPagedAdapter(this)
+        val nowPlayingMovieAdapter = NowPlayingMoviesPagedAdapter(this)
 
         val layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
 
@@ -49,15 +52,15 @@ class MainActivity : AppCompatActivity() {
         recyclerview_popular_movies.setHasFixedSize(true)
         recyclerview_popular_movies.layoutManager = layoutManager
 
-        popularMovieViewModel.popularMoviePagedList.observe(this, Observer {
+        popularMoviesViewModel.popularMoviePagedList.observe(this, Observer {
             popularMovieAdapter.submitList(it)
         })
 
-        popularMovieViewModel.popularMovieNetworkState.observe(this, Observer {
+        popularMoviesViewModel.popularMovieNetworkState.observe(this, Observer {
             progressbar_main_activity.visibility =
-                if (popularMovieViewModel.listIsEmpty() && it == NetworkState.LOADING) View.VISIBLE else View.GONE
+                if (popularMoviesViewModel.listIsEmpty() && it == NetworkState.LOADING) View.VISIBLE else View.GONE
 
-            if (!popularMovieViewModel.listIsEmpty()) {
+            if (!popularMoviesViewModel.listIsEmpty()) {
                 popularMovieAdapter.setNetworkState(it)
             }
         })
@@ -67,40 +70,69 @@ class MainActivity : AppCompatActivity() {
         recyclerview_toprated_movies.setHasFixedSize(true)
         recyclerview_toprated_movies.layoutManager = topRatedLayoutManager
 
-        topRatedMovieViewModel.topRatedMoviePagedList.observe(this, Observer {
+        topRatedMoviesViewModel.topRatedMoviePagedList.observe(this, Observer {
             topRatedMovieAdapter.submitList(it)
         })
 
-        topRatedMovieViewModel.topRatedNetworkState.observe(this, Observer {
+        topRatedMoviesViewModel.topRatedNetworkState.observe(this, Observer {
             progressbar_main_activity.visibility =
-                if (topRatedMovieViewModel.listIsEmpty() && it == NetworkState.LOADING) View.VISIBLE else View.GONE
+                if (topRatedMoviesViewModel.listIsEmpty() && it == NetworkState.LOADING) View.VISIBLE else View.GONE
 
-            if (!topRatedMovieViewModel.listIsEmpty()) {
+            if (!topRatedMoviesViewModel.listIsEmpty()) {
                 topRatedMovieAdapter.setNetworkState(it)
+            }
+        })
+
+        val nowPlayingLayoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        recyclerview_nowplaying_movies.adapter = nowPlayingMovieAdapter
+        recyclerview_nowplaying_movies.setHasFixedSize(true)
+        recyclerview_nowplaying_movies.layoutManager = nowPlayingLayoutManager
+
+        nowPlayingMoviesViewModel.nowPlayingMoviePagedList.observe(this, Observer {
+            nowPlayingMovieAdapter.submitList(it)
+        })
+
+        nowPlayingMoviesViewModel.nowPlayingNetworkState.observe(this, Observer {
+            progressbar_main_activity.visibility =
+                if (nowPlayingMoviesViewModel.listIsEmpty() && it == NetworkState.LOADING) View.VISIBLE else View.GONE
+
+            if (!nowPlayingMoviesViewModel.listIsEmpty()) {
+                nowPlayingMovieAdapter.setNetworkState(it)
             }
         })
     }
 
-    private fun getPopularMovieViewModel(): PopularMovieViewModel {
+    private fun getPopularMovieViewModel(): PopularMoviesViewModel {
         return ViewModelProviders.of(this, object : ViewModelProvider.Factory {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
                 @Suppress("UNCHECKED_CAST")
-                return PopularMovieViewModel(
+                return PopularMoviesViewModel(
                     popularMoviesRepository
                 ) as T
             }
-        })[PopularMovieViewModel::class.java]
+        })[PopularMoviesViewModel::class.java]
     }
 
-    private fun getTopRatedMovieViewModel(): TopRatedMovieViewModel {
+    private fun getTopRatedMovieViewModel(): TopRatedMoviesViewModel {
         return ViewModelProviders.of(this, object : ViewModelProvider.Factory {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
                 @Suppress("UNCHECKED_CAST")
-                return TopRatedMovieViewModel(
+                return TopRatedMoviesViewModel(
                     topRatedMoviesRepository
                 ) as T
             }
-        })[TopRatedMovieViewModel::class.java]
+        })[TopRatedMoviesViewModel::class.java]
+    }
+
+    private fun getNowPlayingMovieViewModel(): NowPlayingMoviesViewModel {
+        return ViewModelProviders.of(this, object : ViewModelProvider.Factory {
+            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+                @Suppress("UNCHECKED_CAST")
+                return NowPlayingMoviesViewModel(
+                    nowPlayingMoviesRepository
+                ) as T
+            }
+        })[NowPlayingMoviesViewModel::class.java]
     }
 
 }

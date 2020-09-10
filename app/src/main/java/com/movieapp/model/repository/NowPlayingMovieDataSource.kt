@@ -9,8 +9,11 @@ import com.movieapp.model.vo.Movie
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
-class TopRatedMovieDataSource (private val apiService : MovieDBInterface, private val compositeDisposable: CompositeDisposable)
-    : PageKeyedDataSource<Int, Movie>() {
+class NowPlayingMovieDataSource(
+    private val apiService: MovieDBInterface,
+    private val compositeDisposable: CompositeDisposable
+) : PageKeyedDataSource<Int, Movie>()  {
+
     private var page = FIRST_PAGE
 
     val networkState: MutableLiveData<NetworkState> = MutableLiveData()
@@ -21,7 +24,7 @@ class TopRatedMovieDataSource (private val apiService : MovieDBInterface, privat
         networkState.postValue(NetworkState.LOADING)
 
         compositeDisposable.add(
-            apiService.getTopRatedMovie(page)
+            apiService.getNowPlayingMovie(page)
                 .subscribeOn(Schedulers.io())
                 .subscribe(
                     {
@@ -30,7 +33,7 @@ class TopRatedMovieDataSource (private val apiService : MovieDBInterface, privat
                     },
                     {
                         networkState.postValue(NetworkState.ERROR)
-                        Log.e("TopRatedMovieDataSource", it.message.toString())
+                        Log.e("NowPlayingMovieDataSource", it.message.toString())
                     }
                 )
         )
@@ -40,7 +43,7 @@ class TopRatedMovieDataSource (private val apiService : MovieDBInterface, privat
         networkState.postValue(NetworkState.LOADING)
 
         compositeDisposable.add(
-            apiService.getTopRatedMovie(params.key)
+            apiService.getNowPlayingMovie(params.key)
                 .subscribeOn(Schedulers.io())
                 .subscribe(
                     {
@@ -54,7 +57,7 @@ class TopRatedMovieDataSource (private val apiService : MovieDBInterface, privat
                     },
                     {
                         networkState.postValue(NetworkState.ERROR)
-                        Log.e("TopRatedMovieDataSource", it.message.toString())
+                        Log.e("NowPlayingMovieDataSource", it.message.toString())
                     }
                 )
         )
@@ -63,4 +66,5 @@ class TopRatedMovieDataSource (private val apiService : MovieDBInterface, privat
     override fun loadBefore(params:LoadParams<Int>, callback:LoadCallback<Int, Movie>) {
 
     }
+
 }

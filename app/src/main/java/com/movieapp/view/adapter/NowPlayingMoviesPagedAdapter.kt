@@ -16,10 +16,12 @@ import com.movieapp.model.repository.NetworkState
 import com.movieapp.model.vo.Movie
 import com.movieapp.view.MovieDetailsActivity
 import kotlinx.android.synthetic.main.item_network_state.view.*
-import kotlinx.android.synthetic.main.item_popular_movie.view.*
+import kotlinx.android.synthetic.main.item_now_playing_movie.view.*
 
-class PopularMoviesPagedAdapter(public val context: Context) :
-    PagedListAdapter<Movie, RecyclerView.ViewHolder>(MovieDiffCallback()) {
+class NowPlayingMoviesPagedAdapter(public val context: Context) :
+    PagedListAdapter<Movie, RecyclerView.ViewHolder>(
+        NowPlayingMoviesPagedAdapter.MovieDiffCallback()
+    ) {
 
     val MOVIE_VIEW_TYPE = 1
     val NETWORK_VIEW_TYPE = 2
@@ -32,7 +34,7 @@ class PopularMoviesPagedAdapter(public val context: Context) :
         val view: View
 
         if (viewType == MOVIE_VIEW_TYPE) {
-            view = layoutInflater.inflate(R.layout.item_popular_movie, parent, false)
+            view = layoutInflater.inflate(R.layout.item_now_playing_movie, parent, false)
             return MovieItemViewHolder(view)
         } else {
             view = layoutInflater.inflate(R.layout.item_network_state, parent, false)
@@ -42,9 +44,8 @@ class PopularMoviesPagedAdapter(public val context: Context) :
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (getItemViewType(position) == MOVIE_VIEW_TYPE) {
-            (holder as MovieItemViewHolder).bind(getItem(position),context)
-        }
-        else {
+            (holder as MovieItemViewHolder).bind(getItem(position), context)
+        } else {
             (holder as NetworkStateItemViewHolder).bind(networkState)
         }
     }
@@ -67,8 +68,6 @@ class PopularMoviesPagedAdapter(public val context: Context) :
     }
 
 
-
-
     class MovieDiffCallback : DiffUtil.ItemCallback<Movie>() {
         override fun areItemsTheSame(oldItem: Movie, newItem: Movie): Boolean {
             return oldItem.id == newItem.id
@@ -81,19 +80,19 @@ class PopularMoviesPagedAdapter(public val context: Context) :
     }
 
 
-    class MovieItemViewHolder (view: View) : RecyclerView.ViewHolder(view) {
+    class MovieItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-        fun bind(movie: Movie?,context: Context) {
-            itemView.title_popular_movie.text = movie?.title
+        fun bind(movie: Movie?, context: Context) {
+            itemView.title_now_playing_movie.text = movie?.title
             val year = movie?.releaseDate?.split("-")?.get(0)
-            itemView.date_popular_movie.text =  year
+            itemView.date_now_playing_movie.text = year
 
             val moviePosterURL = POSTER_BASE_URL + movie?.posterPath
             Glide.with(itemView.context)
                 .load(moviePosterURL)
-                .into(itemView.poster_popular_movie);
+                .into(itemView.poster_now_playing_movie);
 
-            itemView.setOnClickListener{
+            itemView.setOnClickListener {
                 val intent = Intent(context, MovieDetailsActivity::class.java)
                 intent.putExtra("id", movie?.id)
                 context.startActivity(intent)
@@ -103,23 +102,20 @@ class PopularMoviesPagedAdapter(public val context: Context) :
 
     }
 
-    class NetworkStateItemViewHolder (view: View) : RecyclerView.ViewHolder(view) {
+    class NetworkStateItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         fun bind(networkState: NetworkState?) {
             if (networkState != null && networkState == NetworkState.LOADING) {
                 itemView.progress_bar_item.visibility = View.VISIBLE;
-            }
-            else  {
+            } else {
                 itemView.progress_bar_item.visibility = View.GONE;
             }
 
             if (networkState != null && networkState == NetworkState.ERROR) {
                 Log.e("NetworkStateViewHolder", networkState.message)
-            }
-            else if (networkState != null && networkState == NetworkState.ENDOFLIST) {
+            } else if (networkState != null && networkState == NetworkState.ENDOFLIST) {
                 Log.e("NetworkStateViewHolder", networkState.message)
-            }
-            else {
+            } else {
                 Log.d("NetworkStateViewHolder", "all good")
             }
         }
@@ -143,8 +139,6 @@ class PopularMoviesPagedAdapter(public val context: Context) :
         }
 
     }
-
-
 
 
 }
