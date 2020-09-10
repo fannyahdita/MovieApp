@@ -1,5 +1,6 @@
 package com.movieapp.view
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
@@ -78,17 +79,26 @@ class MovieDetailsActivity : AppCompatActivity() {
             }
         })
 
+
     }
 
-    private fun bindUI(it : MovieDetails) {
-        textview_title.text = it.title
-        textview_release_date.text = it.releaseDate
-        textview_description.text = it.overview
+    private fun bindUI(details : MovieDetails) {
+        textview_title.text = details.title
+        textview_release_date.text = details.releaseDate
+        textview_description.text = details.overview
 
-        val posterURL = POSTER_BASE_URL + it.posterPath
+        val posterURL = POSTER_BASE_URL + details.posterPath
         Glide.with(this)
             .load(posterURL)
             .into(image_poster)
+
+        button_share.setOnClickListener {
+            val shareIntent = Intent(Intent.ACTION_SEND)
+            shareIntent.type = "text/plain"
+            val shareBody = "Try to watch ${details.title} now! Checkout on https://www.themoviedb.org/movie/"
+            shareIntent.putExtra(Intent.EXTRA_TEXT, shareBody)
+            startActivity(Intent.createChooser(shareIntent, "Share Via"))
+        }
     }
 
     private fun getMovieDetailsViewModel(movieId: Int) : MovieDetailsViewModel {
