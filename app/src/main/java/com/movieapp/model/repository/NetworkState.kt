@@ -10,5 +10,6 @@ class NetworkState(val status: Status, val message: String) {
         val LOADED : NetworkState = NetworkState(Status.SUCCESS, "Success")
         val LOADING : NetworkState = NetworkState(Status.RUNNING, "Running")
         val ERROR : NetworkState = NetworkState(Status.FAILED, "Failed")
+        val ENDOFLIST : NetworkState = NetworkState(Status.FAILED, "You have reached the end")
     }
 }
