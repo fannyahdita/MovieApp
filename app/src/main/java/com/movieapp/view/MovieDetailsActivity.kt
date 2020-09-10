@@ -3,7 +3,6 @@ package com.movieapp.view
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import androidx.lifecycle.Observer
@@ -20,8 +19,7 @@ import com.movieapp.model.repository.NetworkState
 import com.movieapp.model.vo.MovieDetails
 import com.movieapp.view.adapter.ReviewsAdapter
 import com.movieapp.viewmodel.*
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_single_movie.*
+import kotlinx.android.synthetic.main.activity_movie_details.*
 
 class MovieDetailsActivity : AppCompatActivity() {
 
@@ -35,7 +33,7 @@ class MovieDetailsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_single_movie)
+        setContentView(R.layout.activity_movie_details)
 
         val movieId = intent.getIntExtra("id", 1)
 
