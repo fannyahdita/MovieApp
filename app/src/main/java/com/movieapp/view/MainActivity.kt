@@ -1,8 +1,11 @@
 package com.movieapp.view
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -83,7 +86,8 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        val nowPlayingLayoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        val nowPlayingLayoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         recyclerview_nowplaying_movies.adapter = nowPlayingMovieAdapter
         recyclerview_nowplaying_movies.setHasFixedSize(true)
         recyclerview_nowplaying_movies.layoutManager = nowPlayingLayoutManager
@@ -133,6 +137,24 @@ class MainActivity : AppCompatActivity() {
                 ) as T
             }
         })[NowPlayingMoviesViewModel::class.java]
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val id = item.itemId
+
+        if(id == R.id.favorite) {
+            item.setOnMenuItemClickListener {
+                val intent = Intent(this, FavoriteMoviesActivity::class.java)
+                startActivity(intent)
+                return@setOnMenuItemClickListener super.onOptionsItemSelected(item);
+            }
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }

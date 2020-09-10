@@ -2,7 +2,9 @@ package com.movieapp.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MenuItem
 import android.widget.Toast
+import androidx.appcompat.app.ActionBar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -22,13 +24,19 @@ class MovieDetailsActivity : AppCompatActivity() {
 
     private lateinit var movieDetailsViewModel: MovieDetailsViewModel
     private lateinit var movieRepository : MovieDetailsRepository
+    private lateinit var actionBar: ActionBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_single_movie)
 
-//        val movieId = 1
         val movieId = intent.getIntExtra("id", 1)
+
+        actionBar = this.supportActionBar!!
+        actionBar.setDisplayHomeAsUpEnabled(true)
+        actionBar.title = ""
+        actionBar.elevation = 0F
+
         val apiService : MovieDBInterface = MovieDBClient.getClient()
         movieRepository =
             MovieDetailsRepository(apiService)
@@ -67,5 +75,16 @@ class MovieDetailsActivity : AppCompatActivity() {
                 ) as T
             }
         })[MovieDetailsViewModel::class.java]
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+                finish()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 }
