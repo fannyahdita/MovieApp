@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
 
         val movieAdapter = PopularMoviesPagedAdapter(this)
 
-        val layoutManager = LinearLayoutManager(this)
+        val layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
 
         recyclerview_popular_movies.adapter = movieAdapter
         recyclerview_popular_movies.setHasFixedSize(true)
