@@ -3,12 +3,14 @@ package com.movieapp.view
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.movieapp.R
 import com.movieapp.model.api.MovieDBClient
@@ -16,14 +18,19 @@ import com.movieapp.model.api.MovieDBInterface
 import com.movieapp.model.api.POSTER_BASE_URL
 import com.movieapp.model.repository.NetworkState
 import com.movieapp.model.vo.MovieDetails
-import com.movieapp.viewmodel.MovieDetailsRepository
-import com.movieapp.viewmodel.MovieDetailsViewModel
+import com.movieapp.view.adapter.ReviewsAdapter
+import com.movieapp.viewmodel.*
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_single_movie.*
 
 class MovieDetailsActivity : AppCompatActivity() {
 
     private lateinit var movieDetailsViewModel: MovieDetailsViewModel
+    private lateinit var reviewsViewModel: ReviewsViewModel
+
     private lateinit var movieRepository : MovieDetailsRepository
+    private lateinit var reviewsRepository: ReviewsRepository
+
     private lateinit var actionBar: ActionBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,10 +45,13 @@ class MovieDetailsActivity : AppCompatActivity() {
         actionBar.elevation = 0F
 
         val apiService : MovieDBInterface = MovieDBClient.getClient()
-        movieRepository =
-            MovieDetailsRepository(apiService)
+        movieRepository = MovieDetailsRepository(apiService)
+        reviewsRepository = ReviewsRepository(apiService)
 
-        movieDetailsViewModel = getViewModel(movieId)
+        movieDetailsViewModel = getMovieDetailsViewModel(movieId)
+        reviewsViewModel = getReviewsViewModel(movieId)
+
+        val reviewsAdapter = ReviewsAdapter(this)
 
         movieDetailsViewModel.movieDetails.observe(this, Observer{
             bindUI(it)
@@ -53,6 +63,23 @@ class MovieDetailsActivity : AppCompatActivity() {
                 Toast.makeText(this, "Movie cannot be loaded", Toast.LENGTH_LONG).show()
             }
         })
+
+        val layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+
+        recyclerview_reviews.layoutManager = layoutManager
+        recyclerview_reviews.setHasFixedSize(true)
+        recyclerview_reviews.adapter = reviewsAdapter
+
+        reviewsViewModel.reviewsList.observe(this, Observer {
+            reviewsAdapter.submitList(it)
+        })
+
+        reviewsViewModel.reviewsNetworkState.observe(this, Observer {
+            if (!reviewsViewModel.listIsEmpty()) {
+                reviewsAdapter.setNetworkState(it)
+            }
+        })
+
     }
 
     private fun bindUI(it : MovieDetails) {
@@ -66,7 +93,7 @@ class MovieDetailsActivity : AppCompatActivity() {
             .into(image_poster)
     }
 
-    private fun getViewModel(movieId: Int) : MovieDetailsViewModel {
+    private fun getMovieDetailsViewModel(movieId: Int) : MovieDetailsViewModel {
         return ViewModelProviders.of(this, object : ViewModelProvider.Factory{
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
                 return MovieDetailsViewModel(
@@ -75,6 +102,18 @@ class MovieDetailsActivity : AppCompatActivity() {
                 ) as T
             }
         })[MovieDetailsViewModel::class.java]
+    }
+
+    private fun getReviewsViewModel(movieId: Int): ReviewsViewModel {
+        return ViewModelProviders.of(this, object : ViewModelProvider.Factory {
+            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+                @Suppress("UNCHECKED_CAST")
+                return ReviewsViewModel(
+                    reviewsRepository,
+                    movieId
+                ) as T
+            }
+        })[ReviewsViewModel::class.java]
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

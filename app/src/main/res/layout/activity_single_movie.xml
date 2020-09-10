@@ -1,87 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:context=".view.MovieDetailsActivity">
+        android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/image_poster"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:scaleType="matrix"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:background="#000000" />
-
-        <TextView
-            android:id="@+id/textview_title"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="10dp"
-            android:layout_marginTop="10dp"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/image_poster"
-            tools:text="Iron Man 3" />
+            android:orientation="vertical"
+            tools:context=".view.MovieDetailsActivity">
 
-        <TextView
-            android:id="@+id/textview_release_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="@id/textview_title"
-            app:layout_constraintTop_toBottomOf="@id/textview_title"
-            tools:text="March 12, 2010" />
+            <ImageView
+                android:id="@+id/image_poster"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:scaleType="matrix"
+                tools:background="#000000" />
 
-        <TextView
-            android:id="@+id/textview_desc_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:text="Description"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@id/textview_title"
-            app:layout_constraintTop_toBottomOf="@id/textview_release_date" />
+            <TextView
+                android:id="@+id/textview_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginTop="10dp"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                tools:text="Iron Man 3" />
 
-        <TextView
-            android:id="@+id/textview_description"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="@id/textview_title"
-            app:layout_constraintTop_toBottomOf="@id/textview_desc_title"
-            tools:text="lorem ipsum dolor sit amet masa sih ah. lorem ipsum dolor sit amet. lorem ipsum dolor sit amet dong. lorem ipsum dolor sit amet peneasaran. lorem ipsum dolor sit amet." />
+            <TextView
+                android:id="@+id/textview_release_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginTop="5dp"
+                android:textSize="16sp"
+                tools:text="March 12, 2010" />
 
-        <TextView
-            android:id="@+id/textview_review_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:text="Review"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@id/textview_title"
-            app:layout_constraintTop_toBottomOf="@id/textview_description" />
+            <TextView
+                android:id="@+id/textview_desc_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginTop="15dp"
+                android:text="Description"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/textview_review"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="@id/textview_title"
-            app:layout_constraintTop_toBottomOf="@id/textview_review_title"
-            tools:text="lorem ipsum dolor sit amet masa sih ah. lorem ipsum dolor sit amet. lorem ipsum dolor sit amet dong. lorem ipsum dolor sit amet peneasaran. lorem ipsum dolor sit amet." />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+            <TextView
+                android:id="@+id/textview_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginTop="5dp"
+                android:textSize="16sp"
+                tools:text="lorem ipsum dolor sit amet masa sih ah. lorem ipsum dolor sit amet. lorem ipsum dolor sit amet dong. lorem ipsum dolor sit amet peneasaran. lorem ipsum dolor sit amet." />
+
+            <TextView
+                android:id="@+id/textview_review_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginTop="15dp"
+                android:text="Review"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerview_reviews"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false" />
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>
