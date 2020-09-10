@@ -1,7 +1,7 @@
 package com.movieapp.model.api
 
 import com.movieapp.model.vo.MovieDetails
-import com.movieapp.model.vo.PopularMovies
+import com.movieapp.model.vo.MoviesList
 import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -16,7 +16,10 @@ interface MovieDBInterface {
      */
 
     @GET("movie/popular")
-    fun getPopularMovie(@Query("page") page: Int): Single<PopularMovies>
+    fun getPopularMovies(@Query("page") page: Int): Single<MoviesList>
+
+    @GET("movie/top_rated")
+    fun getTopRatedMovie(@Query("page") page: Int): Single<MoviesList>
 
     @GET("movie/{movie_id}")
     fun getMovieDetails(@Path("movie_id") id : Int) : Single<MovieDetails>

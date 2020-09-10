@@ -2,7 +2,7 @@ package com.movieapp.model.vo
 
 import com.google.gson.annotations.SerializedName
 
-data class PopularMovies(
+data class MoviesList(
     val page: Int,
     @SerializedName("results")
     val movieList: List<Movie>,

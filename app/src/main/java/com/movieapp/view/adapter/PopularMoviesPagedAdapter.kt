@@ -1,4 +1,4 @@
-package com.movieapp.popularMovies
+package com.movieapp.view.adapter
 
 import android.content.Context
 import android.content.Intent
@@ -6,7 +6,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -15,7 +14,7 @@ import com.movieapp.R
 import com.movieapp.model.api.POSTER_BASE_URL
 import com.movieapp.model.repository.NetworkState
 import com.movieapp.model.vo.Movie
-import com.movieapp.movieDetails.SingleMovie
+import com.movieapp.view.MovieDetailsActivity
 import kotlinx.android.synthetic.main.item_network_state.view.*
 import kotlinx.android.synthetic.main.item_popular_movie.view.*
 
@@ -85,7 +84,8 @@ class PopularMoviesPagedAdapter (public val context: Context) : PagedListAdapter
 
         fun bind(movie: Movie?,context: Context) {
             itemView.title_popular_movie.text = movie?.title
-            itemView.date_popular_movie.text =  movie?.releaseDate
+            val year = movie?.releaseDate?.split("-")?.get(0)
+            itemView.date_popular_movie.text =  year
 
             val moviePosterURL = POSTER_BASE_URL + movie?.posterPath
             Glide.with(itemView.context)
@@ -93,7 +93,7 @@ class PopularMoviesPagedAdapter (public val context: Context) : PagedListAdapter
                 .into(itemView.poster_popular_movie);
 
             itemView.setOnClickListener{
-                val intent = Intent(context, SingleMovie::class.java)
+                val intent = Intent(context, MovieDetailsActivity::class.java)
                 intent.putExtra("id", movie?.id)
                 context.startActivity(intent)
             }

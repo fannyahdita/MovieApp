@@ -1,4 +1,4 @@
-package com.movieapp.popularMovies
+package com.movieapp.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
@@ -7,20 +7,20 @@ import com.movieapp.model.repository.NetworkState
 import com.movieapp.model.vo.Movie
 import io.reactivex.disposables.CompositeDisposable
 
-class PopularActivityViewModel (private val popularMoviesRepository : PopularMoviesPagedListRepository) : ViewModel() {
+class PopularMovieViewModel (private val popularMoviesRepository : PopularMoviesPagedListRepository) : ViewModel() {
 
     private val compositeDisposable = CompositeDisposable()
 
-    val  moviePagedList : LiveData<PagedList<Movie>> by lazy {
+    val  popularMoviePagedList : LiveData<PagedList<Movie>> by lazy {
         popularMoviesRepository.fetchLiveMoviePagedList(compositeDisposable)
     }
 
-    val  networkState : LiveData<NetworkState> by lazy {
+    val  popularMovieNetworkState : LiveData<NetworkState> by lazy {
         popularMoviesRepository.getNetworkState()
     }
 
     fun listIsEmpty(): Boolean {
-        return moviePagedList.value?.isEmpty() ?: true
+        return popularMoviePagedList.value?.isEmpty() ?: true
     }
 
 

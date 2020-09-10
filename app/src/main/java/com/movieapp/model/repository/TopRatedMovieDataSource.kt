@@ -9,9 +9,8 @@ import com.movieapp.model.vo.Movie
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
-class PopularMovieDataSource (private val apiService : MovieDBInterface, private val compositeDisposable: CompositeDisposable)
-    : PageKeyedDataSource<Int, Movie>(){
-
+class TopRatedMovieDataSource (private val apiService : MovieDBInterface, private val compositeDisposable: CompositeDisposable)
+    : PageKeyedDataSource<Int, Movie>() {
     private var page = FIRST_PAGE
 
     val networkState: MutableLiveData<NetworkState> = MutableLiveData()
@@ -22,7 +21,7 @@ class PopularMovieDataSource (private val apiService : MovieDBInterface, private
         networkState.postValue(NetworkState.LOADING)
 
         compositeDisposable.add(
-            apiService.getPopularMovies(page)
+            apiService.getTopRatedMovie(page)
                 .subscribeOn(Schedulers.io())
                 .subscribe(
                     {
@@ -41,7 +40,7 @@ class PopularMovieDataSource (private val apiService : MovieDBInterface, private
         networkState.postValue(NetworkState.LOADING)
 
         compositeDisposable.add(
-            apiService.getPopularMovies(params.key)
+            apiService.getTopRatedMovie(params.key)
                 .subscribeOn(Schedulers.io())
                 .subscribe(
                     {
@@ -61,7 +60,7 @@ class PopularMovieDataSource (private val apiService : MovieDBInterface, private
         )
     }
 
-    override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, Movie>) {
+    override fun loadBefore(params:LoadParams<Int>, callback:LoadCallback<Int, Movie>) {
 
     }
 }

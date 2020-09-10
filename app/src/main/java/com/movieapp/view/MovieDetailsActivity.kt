@@ -1,4 +1,4 @@
-package com.movieapp.movieDetails
+package com.movieapp.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -14,11 +14,13 @@ import com.movieapp.model.api.MovieDBInterface
 import com.movieapp.model.api.POSTER_BASE_URL
 import com.movieapp.model.repository.NetworkState
 import com.movieapp.model.vo.MovieDetails
+import com.movieapp.viewmodel.MovieDetailsRepository
+import com.movieapp.viewmodel.MovieDetailsViewModel
 import kotlinx.android.synthetic.main.activity_single_movie.*
 
-class SingleMovie : AppCompatActivity() {
+class MovieDetailsActivity : AppCompatActivity() {
 
-    private lateinit var viewModel: SingleMovieViewModel
+    private lateinit var movieDetailsViewModel: MovieDetailsViewModel
     private lateinit var movieRepository : MovieDetailsRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,15 +30,16 @@ class SingleMovie : AppCompatActivity() {
 //        val movieId = 1
         val movieId = intent.getIntExtra("id", 1)
         val apiService : MovieDBInterface = MovieDBClient.getClient()
-        movieRepository = MovieDetailsRepository(apiService)
+        movieRepository =
+            MovieDetailsRepository(apiService)
 
-        viewModel = getViewModel(movieId)
+        movieDetailsViewModel = getViewModel(movieId)
 
-        viewModel.movieDetails.observe(this, Observer{
+        movieDetailsViewModel.movieDetails.observe(this, Observer{
             bindUI(it)
         })
 
-        viewModel.networkState.observe(this, Observer {
+        movieDetailsViewModel.networkState.observe(this, Observer {
             //progressbar kalau loading
             if(it == NetworkState.ERROR) {
                 Toast.makeText(this, "Movie cannot be loaded", Toast.LENGTH_LONG).show()
@@ -55,11 +58,14 @@ class SingleMovie : AppCompatActivity() {
             .into(image_poster)
     }
 
-    private fun getViewModel(movieId: Int) : SingleMovieViewModel {
+    private fun getViewModel(movieId: Int) : MovieDetailsViewModel {
         return ViewModelProviders.of(this, object : ViewModelProvider.Factory{
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                return SingleMovieViewModel(movieRepository, movieId) as T
+                return MovieDetailsViewModel(
+                    movieRepository,
+                    movieId
+                ) as T
             }
-        })[SingleMovieViewModel::class.java]
+        })[MovieDetailsViewModel::class.java]
     }
 }
