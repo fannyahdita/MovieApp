@@ -28,16 +28,20 @@ class MovieDetailsNetworkDataSource(
 
         try {
             compositeDisposable.add(
-                apiService.getMovieDetails(movieId)
-                    .subscribeOn(Schedulers.io())
-                    .subscribe ({
-                        _movieDetailsResponse.postValue(it)
-                        _networkState.postValue(NetworkState.LOADED)
-                    }, {
-                        _networkState.postValue(NetworkState.ERROR)
-                        Log.e("MOVIE DETAILS DATA SOURCE", it.message.toString())
-                    })
-            )
+                    apiService.getMovieDetails(movieId)
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(
+                            {
+                                _movieDetailsResponse.postValue(it)
+                                _networkState.postValue(NetworkState.LOADED)
+                            },
+                            {
+                                _networkState.postValue(NetworkState.ERROR)
+                                it.message?.let { it1 -> Log.e("MovieDetailsDataSource", it1) }
+                            }
+                        )
+                    )
+
         } catch (e : Exception) {
             Log.e("MOVIE DETAILS DATA SOURCE", e.message.toString())
         }
