@@ -99,6 +99,10 @@ class MovieDetailsActivity : AppCompatActivity() {
             shareIntent.putExtra(Intent.EXTRA_TEXT, shareBody)
             startActivity(Intent.createChooser(shareIntent, "Share Via"))
         }
+
+        button_favorite.setOnClickListener {
+
+        }
     }
 
     private fun getMovieDetailsViewModel(movieId: Int) : MovieDetailsViewModel {
