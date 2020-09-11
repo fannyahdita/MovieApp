@@ -1,9 +1,11 @@
 package com.movieapp.view
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import androidx.lifecycle.Observer
@@ -89,6 +91,7 @@ class MovieDetailsActivity : AppCompatActivity() {
         })
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     private fun bindUI(details : MovieDetails) {
         textview_title.text = details.title
         textview_release_date.text = details.releaseDate
@@ -110,17 +113,20 @@ class MovieDetailsActivity : AppCompatActivity() {
         for (favorite in favoriteList) {
             if(favorite.movieId == details.id) {
                 button_favorite.setImageResource(R.drawable.already_favorited_button)
+                button_favorite.tag = "favorite"
             }
         }
 
         button_favorite.setOnClickListener {
             val favorite = Favorite (details.id, details.title, details.releaseDate, details.posterPath, details.overview)
-            if (button_favorite.tag == R.drawable.already_favorited_button) {
+            if (button_favorite.tag == "favorite") {
                 button_favorite.setImageResource(R.drawable.not_favorite)
+                button_favorite.tag = "not favorite"
                 favoriteViewModel.delete(favorite)
                 Toast.makeText(this, "Removed from favorite", Toast.LENGTH_SHORT).show()
             } else {
                 button_favorite.setImageResource(R.drawable.already_favorited_button)
+                button_favorite.tag = favorite
                 favoriteViewModel.insert(favorite)
                 Toast.makeText(this, "Added to favorite", Toast.LENGTH_SHORT).show()
             }

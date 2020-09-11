@@ -20,30 +20,30 @@ class FavoriteRepository (application: Application) {
 
 
     fun insert(favorite: Favorite) {
-        InsertPhotoAsyncTask(favoriteDao).execute(favorite)
+        InsertAsyncTask(favoriteDao).execute(favorite)
     }
 
     fun delete(favorite: Favorite) {
-        DeletePhotoAsyncTask(favoriteDao).execute(favorite)
+        DeleteAsyncTask(favoriteDao).execute(favorite)
     }
 
     fun getAllFavorites(): LiveData<List<Favorite>> {
         return allFavorites
     }
 
-    private class InsertPhotoAsyncTask(val favoriteDao: FavoriteDao) :
+    private class InsertAsyncTask(val favoriteDao: FavoriteDao) :
         AsyncTask<Favorite, Unit, Unit>() {
 
         override fun doInBackground(vararg p0: Favorite?) {
-            favoriteDao.insertFavorite(p0[0])
+            favoriteDao.insert(p0[0])
         }
     }
 
-    private class DeletePhotoAsyncTask(val favoriteDao: FavoriteDao) :
+    private class DeleteAsyncTask(val favoriteDao: FavoriteDao) :
         AsyncTask<Favorite, Unit, Unit>() {
 
         override fun doInBackground(vararg p0: Favorite?) {
-            favoriteDao.deleteFavorite(p0[0])
+            p0[0]?.movieId?.let { favoriteDao.delete(it) }
         }
     }
 
