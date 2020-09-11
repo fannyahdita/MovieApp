@@ -16,6 +16,7 @@ import com.movieapp.R
 import com.movieapp.model.api.MovieDBClient
 import com.movieapp.model.api.MovieDBInterface
 import com.movieapp.model.api.POSTER_BASE_URL
+import com.movieapp.model.database.Favorite
 import com.movieapp.model.repository.NetworkState
 import com.movieapp.model.vo.MovieDetails
 import com.movieapp.view.adapter.ReviewsAdapter
@@ -26,6 +27,9 @@ class MovieDetailsActivity : AppCompatActivity() {
 
     private lateinit var movieDetailsViewModel: MovieDetailsViewModel
     private lateinit var reviewsViewModel: ReviewsViewModel
+    private lateinit var favoriteViewModel: FavoriteViewModel
+
+    private lateinit var favoriteList: List<Favorite>
 
     private lateinit var movieRepository : MovieDetailsRepository
     private lateinit var reviewsRepository: ReviewsRepository
@@ -49,6 +53,11 @@ class MovieDetailsActivity : AppCompatActivity() {
 
         movieDetailsViewModel = getMovieDetailsViewModel(movieId)
         reviewsViewModel = getReviewsViewModel(movieId)
+        favoriteViewModel = ViewModelProviders.of(this).get(FavoriteViewModel::class.java)
+
+        favoriteViewModel.getAllFavorites().observe(this, Observer {
+            favoriteList = it
+        })
 
         val reviewsAdapter = ReviewsAdapter(this)
 
@@ -78,8 +87,6 @@ class MovieDetailsActivity : AppCompatActivity() {
                 reviewsAdapter.setNetworkState(it)
             }
         })
-
-
     }
 
     private fun bindUI(details : MovieDetails) {
@@ -100,9 +107,25 @@ class MovieDetailsActivity : AppCompatActivity() {
             startActivity(Intent.createChooser(shareIntent, "Share Via"))
         }
 
-        button_favorite.setOnClickListener {
-
+        for (favorite in favoriteList) {
+            if(favorite.movieId == details.id) {
+                button_favorite.setImageResource(R.drawable.already_favorited_button)
+            }
         }
+
+        button_favorite.setOnClickListener {
+            val favorite = Favorite (details.id, details.title, details.releaseDate, details.posterPath, details.overview)
+            if (button_favorite.tag == R.drawable.already_favorited_button) {
+                button_favorite.setImageResource(R.drawable.not_favorite)
+                favoriteViewModel.delete(favorite)
+                Toast.makeText(this, "Removed from favorite", Toast.LENGTH_SHORT).show()
+            } else {
+                button_favorite.setImageResource(R.drawable.already_favorited_button)
+                favoriteViewModel.insert(favorite)
+                Toast.makeText(this, "Added to favorite", Toast.LENGTH_SHORT).show()
+            }
+        }
+
     }
 
     private fun getMovieDetailsViewModel(movieId: Int) : MovieDetailsViewModel {

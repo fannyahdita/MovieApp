@@ -8,11 +8,6 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "favorite")
 data class Favorite(
 
-    @PrimaryKey(autoGenerate = true)
-    @NonNull
-    @ColumnInfo(name = "id")
-    val id: Int,
-
     @ColumnInfo(name = "movieId")
     val movieId: Int,
 
@@ -28,5 +23,6 @@ data class Favorite(
     @ColumnInfo(name = "overview")
     val overview: String
 ) {
-
+    @PrimaryKey(autoGenerate = true)
+    var id: Int = 0
 }

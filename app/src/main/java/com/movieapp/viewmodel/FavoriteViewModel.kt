@@ -19,7 +19,7 @@ class FavoriteViewModel(application: Application) : AndroidViewModel(application
         repository.delete(favorite)
     }
 
-    fun getAllPhotos(): LiveData<List<Favorite>> {
+    fun getAllFavorites(): LiveData<List<Favorite>> {
         return allFavorites
     }
 
